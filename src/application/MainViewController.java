@@ -13,7 +13,6 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
 
 public class MainViewController {
 	@FXML
@@ -59,56 +58,58 @@ public class MainViewController {
 			}
 		}
 	}
-	
-	public void makePions(Game game) {
+		
+	public void makePawns(Game game) {
+		game.init();
+		
 		double border = ground.getWidth();
 		double itemSize = border/8;
 		double space = itemSize/2;
 		double R = 10;
-		
+
 		for(int i=0; i<2; i++) {
 			for(int k=0; k<8; k++) {
 				if(i == 0 && k%2 == 1) {
-					game.pionsW[k] = new MyCircle(R*2);
-					game.pionsW[k].setFill(Color.DARKBLUE);
-					board.getChildren().add(game.pionsW[k]);
-					game.pionsW[k].setCenterX(itemSize*k + space);
-					game.pionsW[k].setCenterY(itemSize*i + space);
+					game.pawnsA[k].pawn = new MyCircle(R*2);
+					game.pawnsA[k].pawn.setFill(Color.DARKBLUE);
+					board.getChildren().add(game.pawnsA[k].pawn);
+					game.pawnsA[k].pawn.setCenterX(itemSize*k + space);
+					game.pawnsA[k].pawn.setCenterY(itemSize*i + space);
 					
-					game.pionsB[k] = new MyCircle(R*2);
-					game.pionsB[k].setFill(Color.BROWN);
-					board.getChildren().add(game.pionsB[k]);
-					game.pionsB[k].setCenterX(itemSize*k + space);
-					game.pionsB[k].setCenterY(border - itemSize*2 + space);
+					game.pawnsB[k].pawn = new MyCircle(R*2);
+					game.pawnsB[k].pawn.setFill(Color.BROWN);
+					board.getChildren().add(game.pawnsB[k].pawn);
+					game.pawnsB[k].pawn.setCenterX(itemSize*k + space);
+					game.pawnsB[k].pawn.setCenterY(border - itemSize*2 + space);
 				} 
 				else if(i == 1 && k%2 == 0) {
-					game.pionsW[k] = new MyCircle(R*2);
-					game.pionsW[k].setFill(Color.DARKBLUE);
-					board.getChildren().add(game.pionsW[k]);
-					game.pionsW[k].setCenterX(itemSize*k + space);
-					game.pionsW[k].setCenterY(itemSize*i + space);
+					game.pawnsA[k].pawn = new MyCircle(R*2);
+					game.pawnsA[k].pawn.setFill(Color.DARKBLUE);
+					board.getChildren().add(game.pawnsA[k].pawn);
+					game.pawnsA[k].pawn.setCenterX(itemSize*k + space);
+					game.pawnsA[k].pawn.setCenterY(itemSize*i + space);
 					
-					game.pionsB[k] = new MyCircle(R*2);
-					game.pionsB[k].setFill(Color.BROWN);
-					board.getChildren().add(game.pionsB[k]);
-					game.pionsB[k].setCenterX(itemSize*k + space);
-					game.pionsB[k].setCenterY(border - itemSize + space);
+					game.pawnsB[k].pawn = new MyCircle(R*2);
+					game.pawnsB[k].pawn.setFill(Color.BROWN);
+					board.getChildren().add(game.pawnsB[k].pawn);
+					game.pawnsB[k].pawn.setCenterX(itemSize*k + space);
+					game.pawnsB[k].pawn.setCenterY(border - itemSize + space);
 				}
 			}
 		}
 		
-		for(MyCircle item : game.pionsW) {			
-			item.setOnMousePressed(new EventHandler<Event>() {
+		for(Pawn item : game.pawnsA) {			
+			item.pawn.setOnMousePressed(new EventHandler<Event>() {
 				@Override
 				public void handle(Event event)
 				{
 					PointerInfo a = MouseInfo.getPointerInfo();
 					Point b = a.getLocation();
-					item.x = (int) b.getX();
-					item.y = (int) b.getY();
+					item.pawn.x = (int) b.getX();
+					item.pawn.y = (int) b.getY();
 				}
 			});
-			item.setOnMouseDragged(new EventHandler<Event>() {
+			item.pawn.setOnMouseDragged(new EventHandler<Event>() {
 				@Override
 				public void handle(Event event)
 				{
@@ -116,27 +117,33 @@ public class MainViewController {
 					Point b = a.getLocation();
 					int x = (int) b.getX();
 					int y = (int) b.getY();
-					item.setCenterX(item.getCenterX()+x-item.x);
-					item.setCenterY(item.getCenterY()+y-item.y);
-					item.x=x;
-					item.y=y;
+					item.pawn.setCenterX(item.pawn.getCenterX() + x - item.pawn.x);
+					item.pawn.setCenterY(item.pawn.getCenterY() + y - item.pawn.y);
+					item.pawn.x = x;
+					item.pawn.y = y;
 				}
 			});
-			item.setOnMouseDragExited(null);
+			item.pawn.setOnMouseDragExited(new EventHandler<Event>() {
+				@Override
+				public void handle(Event event)
+				{
+					//sprawdczy mo¿na po³o¿yæ, czy nie sku³, czy nie wygra³, wyrównaj po³o¿enie
+				}
+			});
 		}
 		
-		for(MyCircle item : game.pionsB) {			
-			item.setOnMousePressed(new EventHandler<Event>() {
+		for(Pawn item : game.pawnsB) {			
+			item.pawn.setOnMousePressed(new EventHandler<Event>() {
 				@Override
 				public void handle(Event event)
 				{
 					PointerInfo a = MouseInfo.getPointerInfo();
 					Point b = a.getLocation();
-					item.x = (int) b.getX();
-					item.y = (int) b.getY();
+					item.pawn.x = (int) b.getX();
+					item.pawn.y = (int) b.getY();
 				}
 			});
-			item.setOnMouseDragged(new EventHandler<Event>() {
+			item.pawn.setOnMouseDragged(new EventHandler<Event>() {
 				@Override
 				public void handle(Event event)
 				{
@@ -144,13 +151,13 @@ public class MainViewController {
 					Point b = a.getLocation();
 					int x = (int) b.getX();
 					int y = (int) b.getY();
-					item.setCenterX(item.getCenterX()+x-item.x);
-					item.setCenterY(item.getCenterY()+y-item.y);
-					item.x=x;
-					item.y=y;
+					item.pawn.setCenterX(item.pawn.getCenterX() + x - item.pawn.x);
+					item.pawn.setCenterY(item.pawn.getCenterY() + y - item.pawn.y);
+					item.pawn.x=x;
+					item.pawn.y=y;
 				}
 			});
-			item.setOnMouseDragExited(null);
+			item.pawn.setOnMouseDragExited(null);
 		}
 	}
 	

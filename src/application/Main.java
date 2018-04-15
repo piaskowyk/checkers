@@ -22,7 +22,7 @@ public class Main extends Application {
 			primaryStage.show();
 			
 			controller.drawPlayGround();
-			controller.makePions(game);
+			controller.makePawns(game);
 			
 			
 		} catch(Exception e) {
