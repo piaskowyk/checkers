@@ -4,7 +4,6 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.Pane?>
-<?import javafx.scene.shape.Circle?>
 
 <BorderPane minHeight="530.0" minWidth="500.0" prefHeight="540.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.MainViewController">
    <top>
@@ -17,10 +16,9 @@
       </Pane>
    </top>
    <center>
-      <Pane prefHeight="500.0" prefWidth="500.0" BorderPane.alignment="CENTER">
+      <Pane fx:id="board" prefHeight="508.0" prefWidth="500.0" BorderPane.alignment="CENTER">
          <children>
-            <Canvas id="ground" height="500.0" width="500.0" />
-            <Circle id="circle_tmp" fill="DODGERBLUE" layoutX="109.0" layoutY="76.0" radius="36.0" stroke="BLACK" strokeType="INSIDE" />
+            <Canvas fx:id="ground" height="500.0" width="500.0" />
          </children>
       </Pane>
    </center>
