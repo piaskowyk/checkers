@@ -23,11 +23,11 @@ public class Game {
 		
 		for(int i=0; i<8; i++) {
 			for(int k=0; k<8; k++) {
-				if(i == 0 && k%2 == 1) ground[i][k] = true;
-				else if(i == 1 && k%2 == 0) ground[i][k] = true;
-				else if(i == 6 && k%2 == 1) ground[i][k] = true;
-				else if(i == 7 && k%2 == 0) ground[i][k] = true;
-				else ground[i][k] = false;
+				if(i == 0 && k%2 == 1) ground[k][i] = true;
+				else if(i == 1 && k%2 == 0) ground[k][i] = true;
+				else if(i == 6 && k%2 == 1) ground[k][i] = true;
+				else if(i == 7 && k%2 == 0) ground[k][i] = true;
+				else ground[k][i] = false;
 			}
 		}
 		

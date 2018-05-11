@@ -15,6 +15,12 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 
 public class MainViewController {
+	
+	private double border;
+	private double itemSize;
+	private double space;
+	private double R;
+	
 	@FXML
 	private Button btn;
 	@FXML
@@ -62,10 +68,10 @@ public class MainViewController {
 	public void makePawns(Game game) {
 		game.init();
 		
-		double border = ground.getWidth();
-		double itemSize = border/8;
-		double space = itemSize/2;
-		double R = 10;
+		border = ground.getWidth();
+		itemSize = border/8;
+		space = itemSize/2;
+		R = 10;
 
 		for(int i=0; i<2; i++) {
 			for(int k=0; k<8; k++) {
@@ -75,12 +81,18 @@ public class MainViewController {
 					board.getChildren().add(game.pawnsA[k].pawn);
 					game.pawnsA[k].pawn.setCenterX(itemSize*k + space);
 					game.pawnsA[k].pawn.setCenterY(itemSize*i + space);
+					game.pawnsA[k].nrX = k;
+					game.pawnsA[k].nrY = 0;
+					game.pawnsA[k].type = Pawn.Color.A;
 					
 					game.pawnsB[k].pawn = new MyCircle(R*2);
 					game.pawnsB[k].pawn.setFill(Color.BROWN);
 					board.getChildren().add(game.pawnsB[k].pawn);
 					game.pawnsB[k].pawn.setCenterX(itemSize*k + space);
 					game.pawnsB[k].pawn.setCenterY(border - itemSize*2 + space);
+					game.pawnsB[k].nrX = k;
+					game.pawnsB[k].nrY = 6;
+					game.pawnsB[k].type = Pawn.Color.B;
 				} 
 				else if(i == 1 && k%2 == 0) {
 					game.pawnsA[k].pawn = new MyCircle(R*2);
@@ -88,12 +100,18 @@ public class MainViewController {
 					board.getChildren().add(game.pawnsA[k].pawn);
 					game.pawnsA[k].pawn.setCenterX(itemSize*k + space);
 					game.pawnsA[k].pawn.setCenterY(itemSize*i + space);
+					game.pawnsA[k].nrX = k;
+					game.pawnsA[k].nrY = 1;
+					game.pawnsA[k].type = Pawn.Color.A;
 					
 					game.pawnsB[k].pawn = new MyCircle(R*2);
 					game.pawnsB[k].pawn.setFill(Color.BROWN);
 					board.getChildren().add(game.pawnsB[k].pawn);
 					game.pawnsB[k].pawn.setCenterX(itemSize*k + space);
 					game.pawnsB[k].pawn.setCenterY(border - itemSize + space);
+					game.pawnsB[k].nrX = k;
+					game.pawnsB[k].nrY = 7;
+					game.pawnsB[k].type = Pawn.Color.B;
 				}
 			}
 		}
@@ -123,11 +141,64 @@ public class MainViewController {
 					item.pawn.y = y;
 				}
 			});
-			item.pawn.setOnMouseDragExited(new EventHandler<Event>() {
+			item.pawn.setOnMouseReleased(new EventHandler<Event>() {
 				@Override
 				public void handle(Event event)
-				{
-					//sprawdczy mo¿na po³o¿yæ, czy nie sku³, czy nie wygra³, wyrównaj po³o¿enie
+				{					
+					PointerInfo a = MouseInfo.getPointerInfo();
+					Point b = a.getLocation();
+					int x = (int) b.getX();
+					int y = (int) b.getY();
+					double X,Y;
+					int biasX, biasY;
+					
+					biasX = (int)Math.floor((item.pawn.getCenterX() + x - item.pawn.x) / itemSize);
+					biasY = (int)Math.floor((item.pawn.getCenterY() + y - item.pawn.y) / itemSize);
+					
+					System.out.println(item.type);
+					
+					if(item.type == Pawn.Color.A) {
+						if(
+								(
+									(biasY != item.nrY + 1 || biasX != item.nrX + 1) 
+									&&
+									(biasY != item.nrY + 1 || biasX != item.nrX - 1)
+								) 
+								|| 
+								(
+									biasY < 0 || biasY > 7 
+									|| 
+									biasX < 0 || biasX > 7
+								)
+								||
+								(
+									game.ground[biasX][biasY] == true
+								)
+								||
+								(
+									false // warunek zbicia przeciwnika
+								)
+							) {
+							biasX = item.nrX;
+							biasY = item.nrY;
+						}
+					} else {
+						
+					}
+						
+					X = biasX * itemSize + space;
+					Y = biasY * itemSize + space;
+					
+					game.ground[item.nrX][item.nrY] = false;
+					game.ground[biasX][biasY] = true;
+					
+					item.nrX = biasX;
+					item.nrY = biasY;
+					
+					item.pawn.setCenterX(X);
+					item.pawn.setCenterY(Y);
+					item.pawn.x = (int)X;
+					item.pawn.y = (int)Y;
 				}
 			});
 		}
