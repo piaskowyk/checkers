@@ -21,6 +21,8 @@ public class MainViewController {
 	private double space;
 	private double R;
 	
+	private Pawn.Color tourIs = Pawn.Color.A;
+	
 	@FXML
 	private Button btn;
 	@FXML
@@ -160,11 +162,39 @@ public class MainViewController {
 			}
 		}
 		
-		if(!stop && !permission && item.type == Pawn.Color.A1) {
-			//TODO
+		if(!stop && !permission && item.type == Pawn.Color.B) {
+			if(biasX == item.indexX - 1 && biasY == item.indexY - 1) {
+				permission = true;
+				if(biasY == 0) chanceType = true;
+			}
+			
+			if(biasX == item.indexX + 1 && biasY == item.indexY - 1) {
+				permission = true;
+				if(biasY == 0) chanceType = true;
+			}
+			
+			if((biasX == item.indexX - 2 && biasY == item.indexY - 2) 
+					&& game.GampePlayPawns[item.indexX - 1][item.indexY - 1].type != null 
+					&& (game.GampePlayPawns[item.indexX - 1][item.indexY - 1].type == Pawn.Color.A 
+					|| game.GampePlayPawns[item.indexX - 1][item.indexY - 1].type == Pawn.Color.A1)) {
+				permission = true;
+				killEnemy = true;
+				enemyX = item.indexX - 1;
+				enemyY = item.indexY - 1;
+			}
+			
+			if((biasX == item.indexX + 2 && biasY == item.indexY - 2)
+					&& game.GampePlayPawns[item.indexX + 1][item.indexY - 1].type != null 
+					&& (game.GampePlayPawns[item.indexX + 1][item.indexY - 1].type == Pawn.Color.A 
+					|| game.GampePlayPawns[item.indexX + 1][item.indexY - 1].type == Pawn.Color.A1)) {
+				permission = true;
+				killEnemy = true;
+				enemyX = item.indexX + 1;
+				enemyY = item.indexY - 1;
+			}
 		}
 		
-		if(!stop && !permission && item.type == Pawn.Color.B) {
+		if(!stop && !permission && item.type == Pawn.Color.A1) {
 			//TODO
 		}
 
@@ -197,6 +227,10 @@ public class MainViewController {
 				item.type = Pawn.Color.B1;
 			}
 			
+			//TODO: add many move if have many powwibilities to kill enemy
+			if(tourIs == Pawn.Color.A) tourIs = Pawn.Color.B;
+			else tourIs = Pawn.Color.A;
+			
 			if(killEnemy) {
 				if(game.GampePlayPawns[enemyX][enemyY].type == Pawn.Color.A 
 					|| game.GampePlayPawns[enemyX][enemyY].type == Pawn.Color.A1) {
@@ -204,7 +238,7 @@ public class MainViewController {
 				} else {
 					game.pointB--;
 				}
-				game.GampePlayPawns[enemyX][enemyY].circle = new MyCircle(0);
+				game.GampePlayPawns[enemyX][enemyY].circle.setCenterX(-1000);//???
 				game.GampePlayPawns[enemyX][enemyY] = null;
 			}
 			
@@ -248,6 +282,8 @@ public class MainViewController {
 			@Override
 			public void handle(Event event)
 			{
+				if(tourIs == Pawn.Color.A && item.type != Pawn.Color.A && item.type != Pawn.Color.A1) return;
+				if(tourIs == Pawn.Color.B && item.type != Pawn.Color.B && item.type != Pawn.Color.B1) return;
 				PointerInfo a = MouseInfo.getPointerInfo();
 				Point b = a.getLocation();
 				item.circle.x = (int) b.getX();
@@ -259,6 +295,8 @@ public class MainViewController {
 			@Override
 			public void handle(Event event)
 			{
+				if(tourIs == Pawn.Color.A && item.type != Pawn.Color.A && item.type != Pawn.Color.A1) return;
+				if(tourIs == Pawn.Color.B && item.type != Pawn.Color.B && item.type != Pawn.Color.B1) return;
 				PointerInfo a = MouseInfo.getPointerInfo();
 				Point b = a.getLocation();
 				int x = (int) b.getX();
@@ -273,7 +311,9 @@ public class MainViewController {
 		item.circle.setOnMouseReleased(new EventHandler<Event>() {
 			@Override
 			public void handle(Event event)
-			{					
+			{	
+				if(tourIs == Pawn.Color.A && item.type != Pawn.Color.A && item.type != Pawn.Color.A1) return;
+				if(tourIs == Pawn.Color.B && item.type != Pawn.Color.B && item.type != Pawn.Color.B1) return;
 				PointerInfo a = MouseInfo.getPointerInfo();
 				Point b = a.getLocation();
 				int x = (int) b.getX();
