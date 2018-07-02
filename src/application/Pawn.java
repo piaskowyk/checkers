@@ -1,11 +1,11 @@
 package application;
 
 public class Pawn{
-	public MyCircle pawn;
-	public int x;
-	public int y;
-	public int nrX;
-	public int nrY;
+	public MyCircle circle;
+	public double x;
+	public double y;
+	public int indexX;
+	public int indexY;
 	public Color type;
 	
 	public enum Color{

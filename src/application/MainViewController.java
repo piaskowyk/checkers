@@ -38,7 +38,13 @@ public class MainViewController {
 		});
 	}
 	
-	public void drawPlayGround() {
+	public void startGame(Game game) {
+		drawPlayGround();
+		drawPawns(game);
+		eventInit(game);
+	}
+	
+	private void drawPlayGround() {
 		GraphicsContext playGround = ground.getGraphicsContext2D();
 			
 		playGround.setStroke(Color.BLUE);
@@ -64,173 +70,233 @@ public class MainViewController {
 			}
 		}
 	}
-		
-	public void makePawns(Game game) {
-		game.init();
-		
+	
+	private void drawPawns(Game game) {
 		border = ground.getWidth();
 		itemSize = border/8;
 		space = itemSize/2;
 		R = 10;
 
-		for(int i=0; i<2; i++) {
+		for(int i=0; i<8; i++) {
 			for(int k=0; k<8; k++) {
-				if(i == 0 && k%2 == 1) {
-					game.pawnsA[k].pawn = new MyCircle(R*2);
-					game.pawnsA[k].pawn.setFill(Color.DARKBLUE);
-					board.getChildren().add(game.pawnsA[k].pawn);
-					game.pawnsA[k].pawn.setCenterX(itemSize*k + space);
-					game.pawnsA[k].pawn.setCenterY(itemSize*i + space);
-					game.pawnsA[k].nrX = k;
-					game.pawnsA[k].nrY = 0;
-					game.pawnsA[k].type = Pawn.Color.A;
-					
-					game.pawnsB[k].pawn = new MyCircle(R*2);
-					game.pawnsB[k].pawn.setFill(Color.BROWN);
-					board.getChildren().add(game.pawnsB[k].pawn);
-					game.pawnsB[k].pawn.setCenterX(itemSize*k + space);
-					game.pawnsB[k].pawn.setCenterY(border - itemSize*2 + space);
-					game.pawnsB[k].nrX = k;
-					game.pawnsB[k].nrY = 6;
-					game.pawnsB[k].type = Pawn.Color.B;
+				if((i == 0 && k%2 == 1) || (i == 1 && k%2 == 0)) {
+					game.GampePlayPawns[k][i] = new Pawn();
+					game.GampePlayPawns[k][i].type = Pawn.Color.A;
+					game.GampePlayPawns[k][i].indexX = k;
+					game.GampePlayPawns[k][i].indexY = i;
+					game.GampePlayPawns[k][i].circle = new MyCircle(R*2);
+					game.GampePlayPawns[k][i].circle.setFill(Color.DARKBLUE);
+					board.getChildren().add(game.GampePlayPawns[k][i].circle);
+					game.GampePlayPawns[k][i].circle.setCenterX(itemSize*k + space);
+					game.GampePlayPawns[k][i].circle.setCenterY(itemSize*i + space);
 				} 
-				else if(i == 1 && k%2 == 0) {
-					game.pawnsA[k].pawn = new MyCircle(R*2);
-					game.pawnsA[k].pawn.setFill(Color.DARKBLUE);
-					board.getChildren().add(game.pawnsA[k].pawn);
-					game.pawnsA[k].pawn.setCenterX(itemSize*k + space);
-					game.pawnsA[k].pawn.setCenterY(itemSize*i + space);
-					game.pawnsA[k].nrX = k;
-					game.pawnsA[k].nrY = 1;
-					game.pawnsA[k].type = Pawn.Color.A;
-					
-					game.pawnsB[k].pawn = new MyCircle(R*2);
-					game.pawnsB[k].pawn.setFill(Color.BROWN);
-					board.getChildren().add(game.pawnsB[k].pawn);
-					game.pawnsB[k].pawn.setCenterX(itemSize*k + space);
-					game.pawnsB[k].pawn.setCenterY(border - itemSize + space);
-					game.pawnsB[k].nrX = k;
-					game.pawnsB[k].nrY = 7;
-					game.pawnsB[k].type = Pawn.Color.B;
+				else if((i == 6 && k%2 == 1) || (i == 7 && k%2 == 0)) {		
+					game.GampePlayPawns[k][i] = new Pawn();
+					game.GampePlayPawns[k][i].type = Pawn.Color.B;
+					game.GampePlayPawns[k][i].indexX = k;
+					game.GampePlayPawns[k][i].indexY = i;
+					game.GampePlayPawns[k][i].circle = new MyCircle(R*2);
+					game.GampePlayPawns[k][i].circle.setFill(Color.BROWN);
+					board.getChildren().add(game.GampePlayPawns[k][i].circle);
+					game.GampePlayPawns[k][i].circle.setCenterX(itemSize*k + space);
+					game.GampePlayPawns[k][i].circle.setCenterY(itemSize*i + space);
+				}
+				else {
+					game.GampePlayPawns[k][i] = null;
 				}
 			}
 		}
-		
-		for(Pawn item : game.pawnsA) {			
-			item.pawn.setOnMousePressed(new EventHandler<Event>() {
-				@Override
-				public void handle(Event event)
-				{
-					PointerInfo a = MouseInfo.getPointerInfo();
-					Point b = a.getLocation();
-					item.pawn.x = (int) b.getX();
-					item.pawn.y = (int) b.getY();
+	}
+	
+	private void eventInit(Game game) {
+		for(int i = 0; i < 8; i++) {
+			for(int k = 0; k < 8; k++) {
+				if(game.GampePlayPawns[k][i] != null) {
+					eventInitPawn(game, game.GampePlayPawns[k][i]);
 				}
-			});
-			item.pawn.setOnMouseDragged(new EventHandler<Event>() {
-				@Override
-				public void handle(Event event)
-				{
-					PointerInfo a = MouseInfo.getPointerInfo();
-					Point b = a.getLocation();
-					int x = (int) b.getX();
-					int y = (int) b.getY();
-					item.pawn.setCenterX(item.pawn.getCenterX() + x - item.pawn.x);
-					item.pawn.setCenterY(item.pawn.getCenterY() + y - item.pawn.y);
-					item.pawn.x = x;
-					item.pawn.y = y;
-				}
-			});
-			item.pawn.setOnMouseReleased(new EventHandler<Event>() {
-				@Override
-				public void handle(Event event)
-				{					
-					PointerInfo a = MouseInfo.getPointerInfo();
-					Point b = a.getLocation();
-					int x = (int) b.getX();
-					int y = (int) b.getY();
-					double X,Y;
-					int biasX, biasY;
-					
-					biasX = (int)Math.floor((item.pawn.getCenterX() + x - item.pawn.x) / itemSize);
-					biasY = (int)Math.floor((item.pawn.getCenterY() + y - item.pawn.y) / itemSize);
-					
-					System.out.println(item.type);
-					
-					if(item.type == Pawn.Color.A) {
-						if(
-								(
-									(biasY != item.nrY + 1 || biasX != item.nrX + 1) 
-									&&
-									(biasY != item.nrY + 1 || biasX != item.nrX - 1)
-								) 
-								|| 
-								(
-									biasY < 0 || biasY > 7 
-									|| 
-									biasX < 0 || biasX > 7
-								)
-								||
-								(
-									game.ground[biasX][biasY] == true
-								)
-								||
-								(
-									false // warunek zbicia przeciwnika
-								)
-							) {
-							biasX = item.nrX;
-							biasY = item.nrY;
-						}
-					} else {
-						
-					}
-						
-					X = biasX * itemSize + space;
-					Y = biasY * itemSize + space;
-					
-					game.ground[item.nrX][item.nrY] = false;
-					game.ground[biasX][biasY] = true;
-					
-					item.nrX = biasX;
-					item.nrY = biasY;
-					
-					item.pawn.setCenterX(X);
-					item.pawn.setCenterY(Y);
-					item.pawn.x = (int)X;
-					item.pawn.y = (int)Y;
-				}
-			});
-		}
-		
-		for(Pawn item : game.pawnsB) {			
-			item.pawn.setOnMousePressed(new EventHandler<Event>() {
-				@Override
-				public void handle(Event event)
-				{
-					PointerInfo a = MouseInfo.getPointerInfo();
-					Point b = a.getLocation();
-					item.pawn.x = (int) b.getX();
-					item.pawn.y = (int) b.getY();
-				}
-			});
-			item.pawn.setOnMouseDragged(new EventHandler<Event>() {
-				@Override
-				public void handle(Event event)
-				{
-					PointerInfo a = MouseInfo.getPointerInfo();
-					Point b = a.getLocation();
-					int x = (int) b.getX();
-					int y = (int) b.getY();
-					item.pawn.setCenterX(item.pawn.getCenterX() + x - item.pawn.x);
-					item.pawn.setCenterY(item.pawn.getCenterY() + y - item.pawn.y);
-					item.pawn.x=x;
-					item.pawn.y=y;
-				}
-			});
-			item.pawn.setOnMouseDragExited(null);
+			}
 		}
 	}
+	
+	private void movePawn(Game game, Pawn item, int biasX, int biasY) {
+		boolean stop = false;
+		boolean permission = false;
+		boolean chanceType = false;
+		boolean killEnemy = false;
+		int enemyX = 0, enemyY = 0;
+		
+		if(biasX < 0 || biasY < 0 || biasX > 7 || biasY > 7) stop = true; // out of playground
+		if(!stop && game.GampePlayPawns[biasX][biasY] != null) stop = true; // field is not free
+				
+		if(!stop && !permission && item.type == Pawn.Color.A) {
+			if(biasX == item.indexX - 1 && biasY == item.indexY + 1) {
+				permission = true;
+				if(biasY == 7) chanceType = true;
+			}
+			
+			if(biasX == item.indexX + 1 && biasY == item.indexY + 1) {
+				permission = true;
+				if(biasY == 7) chanceType = true;
+			}
+			
+			if((biasX == item.indexX - 2 && biasY == item.indexY + 2) 
+					&& game.GampePlayPawns[item.indexX - 1][item.indexY + 1].type != null 
+					&& (game.GampePlayPawns[item.indexX - 1][item.indexY + 1].type == Pawn.Color.B 
+					|| game.GampePlayPawns[item.indexX - 1][item.indexY + 1].type == Pawn.Color.B1)) {
+				permission = true;
+				killEnemy = true;
+				enemyX = item.indexX - 1;
+				enemyY = item.indexY + 1;
+			}
+			
+			if((biasX == item.indexX + 2 && biasY == item.indexY + 2)
+					&& game.GampePlayPawns[item.indexX + 1][item.indexY + 1].type != null 
+					&& (game.GampePlayPawns[item.indexX + 1][item.indexY + 1].type == Pawn.Color.B 
+					|| game.GampePlayPawns[item.indexX + 1][item.indexY + 1].type == Pawn.Color.B1)) {
+				permission = true;
+				killEnemy = true;
+				enemyX = item.indexX + 1;
+				enemyY = item.indexY + 1;
+			}
+		}
+		
+		if(!stop && !permission && item.type == Pawn.Color.A1) {
+			//TODO
+		}
+		
+		if(!stop && !permission && item.type == Pawn.Color.B) {
+			//TODO
+		}
+
+		if(!stop && !permission && item.type == Pawn.Color.B1) {
+			//TODO
+		}
+		
+		if(!stop && permission) {		
+			double ptX = biasX * itemSize + space;
+			double ptY = biasY * itemSize + space;
+			
+			item.circle.setCenterX(ptX);
+			item.circle.setCenterY(ptY);
+			item.x = ptX;
+			item.y = ptY;
+			
+			Point lastPt = new Point();
+			lastPt.x = item.indexX;
+			lastPt.y = item.indexY;
+			game.GampePlayPawns[lastPt.x][lastPt.y].indexX = biasX;
+			game.GampePlayPawns[lastPt.x][lastPt.y].indexY = biasY;
+					
+			game.GampePlayPawns[biasX][biasY] = game.GampePlayPawns[lastPt.x][lastPt.y];
+			game.GampePlayPawns[lastPt.x][lastPt.y] = null;
+			
+			if(chanceType && item.type == Pawn.Color.A) {
+				item.type = Pawn.Color.A1;
+			}
+			else if(chanceType && item.type == Pawn.Color.B) {
+				item.type = Pawn.Color.B1;
+			}
+			
+			if(killEnemy) {
+				if(game.GampePlayPawns[enemyX][enemyY].type == Pawn.Color.A 
+					|| game.GampePlayPawns[enemyX][enemyY].type == Pawn.Color.A1) {
+					game.pointA--;
+				} else {
+					game.pointB--;
+				}
+				game.GampePlayPawns[enemyX][enemyY].circle = new MyCircle(0);
+				game.GampePlayPawns[enemyX][enemyY] = null;
+			}
+			
+		} else {
+			double ptX = item.indexX * itemSize + space;
+			double ptY = item.indexY * itemSize + space;
+			
+			item.circle.setCenterX(ptX);
+			item.circle.setCenterY(ptY);
+			item.x = ptX;
+			item.y = ptY;
+		}	
+		
+		if(game.pointA == 0 || game.pointB == 0) {
+			endGame(game);
+		}
+	}
+	
+	private void endGame(Game game) {
+		//TODO
+	}
+	
+	private void printTab(Game game) {
+		for(int i = 0; i < 8; i++) {
+			for(int k = 0; k < 8; k++) {
+				if(game.GampePlayPawns[k][i] != null) {
+					System.out.print(1);
+					if(k != 7) System.out.print(",");
+				} else {
+					System.out.print(0);
+					if(k != 7) System.out.print(",");
+				}
+			}
+			System.out.println();
+		}
+	}
+	
+	private void eventInitPawn(Game game, Pawn item) {
+		/////////////////////////////////////////////////////////
+		item.circle.setOnMousePressed(new EventHandler<Event>() {
+			@Override
+			public void handle(Event event)
+			{
+				PointerInfo a = MouseInfo.getPointerInfo();
+				Point b = a.getLocation();
+				item.circle.x = (int) b.getX();
+				item.circle.y = (int) b.getY();
+			}
+		});
+		////////////////////////////////////////////////////////
+		item.circle.setOnMouseDragged(new EventHandler<Event>() {
+			@Override
+			public void handle(Event event)
+			{
+				PointerInfo a = MouseInfo.getPointerInfo();
+				Point b = a.getLocation();
+				int x = (int) b.getX();
+				int y = (int) b.getY();
+				item.circle.setCenterX(item.circle.getCenterX() + x - item.circle.x);
+				item.circle.setCenterY(item.circle.getCenterY() + y - item.circle.y);
+				item.circle.x = x;
+				item.circle.y = y;
+			}
+		});
+		////////////////////////////////////////////////////////
+		item.circle.setOnMouseReleased(new EventHandler<Event>() {
+			@Override
+			public void handle(Event event)
+			{					
+				PointerInfo a = MouseInfo.getPointerInfo();
+				Point b = a.getLocation();
+				int x = (int) b.getX();
+				int y = (int) b.getY();
+				int biasX, biasY;
+				
+				biasX = (int)Math.floor((item.circle.getCenterX() + x - item.circle.x) / itemSize);
+				biasY = (int)Math.floor((item.circle.getCenterY() + y - item.circle.y) / itemSize);
+			
+				movePawn(game, item, biasX, biasY);
+			}
+		});
+	}
+
+		
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	@FXML
 	private void clickRafal(ActionEvent e)
