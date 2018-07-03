@@ -4,13 +4,13 @@ import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.PointerInfo;
 
-import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 
@@ -21,24 +21,18 @@ public class MainViewController {
 	private double space;
 	private double R;
 	
-	private Pawn.Color tourIs = Pawn.Color.A;
-	
 	@FXML
 	private Button btn;
 	@FXML
 	private Pane board;
 	@FXML
 	private Canvas ground;
-	
-	public void initialize() 
-	{
-		btn.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-				((Button)event.getSource()).setText("mleko");
-			}
-		});
-	}
+	@FXML
+	private Label tourText;
+	@FXML
+	private Label APointText;
+	@FXML
+	private Label BPointText;
 	
 	public void startGame(Game game) {
 		drawPlayGround();
@@ -120,15 +114,81 @@ public class MainViewController {
 		}
 	}
 	
+	private boolean isPossibleToKill(Game game, Pawn item, int posX, int posY) {
+		boolean out = false;
+		if(posX < 0 || posY < 0 || posX > 7 || posY > 7) return false;
+		if(game.GampePlayPawns[posX][posY] != null) return false;
+		
+		if(item.type == Pawn.Color.A) {	
+			if((posX - 2 >= 0 && posY + 2 <= 7)
+					&& game.GampePlayPawns[posX - 1][posY + 1] != null 
+					&& (game.GampePlayPawns[posX - 1][posY + 1].type == Pawn.Color.B 
+						|| game.GampePlayPawns[posX - 1][posY + 1].type == Pawn.Color.B1)
+					&& game.GampePlayPawns[posX - 2][posY + 2] == null) {
+				out = true;
+			}
+			
+			if((posX + 2 <= 7 && posY + 2 <= 7)
+					&& game.GampePlayPawns[posX + 1][posY + 1] != null 
+					&& (game.GampePlayPawns[posX + 1][posY + 1].type == Pawn.Color.B 
+						|| game.GampePlayPawns[posX + 1][posY + 1].type == Pawn.Color.B1)
+					&& game.GampePlayPawns[posX + 2][posY + 2] == null) {
+				out = true;
+			}
+		}
+		
+		if(item.type == Pawn.Color.B) {	
+			if((posX - 2 >= 0 && posY - 2 >= 0)
+					&& game.GampePlayPawns[posX - 1][posY - 1] != null 
+					&& (game.GampePlayPawns[posX - 1][posY - 1].type == Pawn.Color.A 
+						|| game.GampePlayPawns[posX - 1][posY - 1].type == Pawn.Color.A1)
+					&& game.GampePlayPawns[posX - 2][posY - 2] == null) {
+				out = true;
+			}
+			
+			if((posX + 2 <= 7 && posY - 2 >= 0)
+					&& game.GampePlayPawns[posX + 1][posY - 1] != null 
+					&& (game.GampePlayPawns[posX + 1][posY - 1].type == Pawn.Color.A 
+						|| game.GampePlayPawns[posX + 1][posY - 1].type == Pawn.Color.A1)
+					&& game.GampePlayPawns[posX + 2][posY - 2] == null) {
+				out = true;
+			}
+		}
+		
+		if(item.type == Pawn.Color.A1) {
+			//TODO
+		}
+
+		if(item.type == Pawn.Color.B1) {
+			//TODO
+		}
+		
+		if(out) {			
+			game.mustMovePt.x = posX;
+			game.mustMovePt.y = posY;
+		}
+		game.mustMove = out;
+		return out;
+	}
+	
+	private void checkAllToPossibleKill() {
+		//TODO
+	}
+	
+	private void endGame(Game game) {
+		//TODO
+	}
+	
 	private void movePawn(Game game, Pawn item, int biasX, int biasY) {
+		boolean nextTour = false;
 		boolean stop = false;
 		boolean permission = false;
 		boolean chanceType = false;
 		boolean killEnemy = false;
 		int enemyX = 0, enemyY = 0;
 		
-		if(biasX < 0 || biasY < 0 || biasX > 7 || biasY > 7) stop = true; // out of playground
-		if(!stop && game.GampePlayPawns[biasX][biasY] != null) stop = true; // field is not free
+		if(biasX < 0 || biasY < 0 || biasX > 7 || biasY > 7) stop = true;
+		if(!stop && game.GampePlayPawns[biasX][biasY] != null) stop = true;
 				
 		if(!stop && !permission && item.type == Pawn.Color.A) {
 			if(biasX == item.indexX - 1 && biasY == item.indexY + 1) {
@@ -141,24 +201,24 @@ public class MainViewController {
 				if(biasY == 7) chanceType = true;
 			}
 			
-			if((biasX == item.indexX - 2 && biasY == item.indexY + 2) 
-					&& game.GampePlayPawns[item.indexX - 1][item.indexY + 1].type != null 
+			if((biasX == item.indexX - 2 && biasY == item.indexY + 2)
 					&& (game.GampePlayPawns[item.indexX - 1][item.indexY + 1].type == Pawn.Color.B 
-					|| game.GampePlayPawns[item.indexX - 1][item.indexY + 1].type == Pawn.Color.B1)) {
+						|| game.GampePlayPawns[item.indexX - 1][item.indexY + 1].type == Pawn.Color.B1)) {
 				permission = true;
 				killEnemy = true;
 				enemyX = item.indexX - 1;
 				enemyY = item.indexY + 1;
+				if(isPossibleToKill(game, item, biasX, biasY)) nextTour = true;
 			}
 			
 			if((biasX == item.indexX + 2 && biasY == item.indexY + 2)
-					&& game.GampePlayPawns[item.indexX + 1][item.indexY + 1].type != null 
 					&& (game.GampePlayPawns[item.indexX + 1][item.indexY + 1].type == Pawn.Color.B 
-					|| game.GampePlayPawns[item.indexX + 1][item.indexY + 1].type == Pawn.Color.B1)) {
+						|| game.GampePlayPawns[item.indexX + 1][item.indexY + 1].type == Pawn.Color.B1)) {
 				permission = true;
 				killEnemy = true;
 				enemyX = item.indexX + 1;
 				enemyY = item.indexY + 1;
+				if(isPossibleToKill(game, item, biasX, biasY)) nextTour = true;
 			}
 		}
 		
@@ -174,23 +234,23 @@ public class MainViewController {
 			}
 			
 			if((biasX == item.indexX - 2 && biasY == item.indexY - 2) 
-					&& game.GampePlayPawns[item.indexX - 1][item.indexY - 1].type != null 
 					&& (game.GampePlayPawns[item.indexX - 1][item.indexY - 1].type == Pawn.Color.A 
-					|| game.GampePlayPawns[item.indexX - 1][item.indexY - 1].type == Pawn.Color.A1)) {
+						|| game.GampePlayPawns[item.indexX - 1][item.indexY - 1].type == Pawn.Color.A1)) {
 				permission = true;
 				killEnemy = true;
 				enemyX = item.indexX - 1;
 				enemyY = item.indexY - 1;
+				if(isPossibleToKill(game, item, biasX, biasY)) nextTour = true;
 			}
 			
 			if((biasX == item.indexX + 2 && biasY == item.indexY - 2)
-					&& game.GampePlayPawns[item.indexX + 1][item.indexY - 1].type != null 
 					&& (game.GampePlayPawns[item.indexX + 1][item.indexY - 1].type == Pawn.Color.A 
 					|| game.GampePlayPawns[item.indexX + 1][item.indexY - 1].type == Pawn.Color.A1)) {
 				permission = true;
 				killEnemy = true;
 				enemyX = item.indexX + 1;
 				enemyY = item.indexY - 1;
+				if(isPossibleToKill(game, item, biasX, biasY)) nextTour = true;
 			}
 		}
 		
@@ -226,17 +286,25 @@ public class MainViewController {
 			else if(chanceType && item.type == Pawn.Color.B) {
 				item.type = Pawn.Color.B1;
 			}
-			
-			//TODO: add many move if have many powwibilities to kill enemy
-			if(tourIs == Pawn.Color.A) tourIs = Pawn.Color.B;
-			else tourIs = Pawn.Color.A;
+
+			if(!nextTour) {				
+				if(game.tourIs == Pawn.Color.A) {
+					game.tourIs = Pawn.Color.B;
+					tourText.setText("B");
+				} else {
+					game.tourIs = Pawn.Color.A;
+					tourText.setText("A");
+				}
+			}
 			
 			if(killEnemy) {
 				if(game.GampePlayPawns[enemyX][enemyY].type == Pawn.Color.A 
 					|| game.GampePlayPawns[enemyX][enemyY].type == Pawn.Color.A1) {
 					game.pointA--;
+					APointText.setText(Integer.toString(game.pointA));
 				} else {
 					game.pointB--;
+					BPointText.setText(Integer.toString(game.pointB));
 				}
 				game.GampePlayPawns[enemyX][enemyY].circle.setCenterX(-1000);//???
 				game.GampePlayPawns[enemyX][enemyY] = null;
@@ -257,10 +325,6 @@ public class MainViewController {
 		}
 	}
 	
-	private void endGame(Game game) {
-		//TODO
-	}
-	
 	private void printTab(Game game) {
 		for(int i = 0; i < 8; i++) {
 			for(int k = 0; k < 8; k++) {
@@ -276,18 +340,27 @@ public class MainViewController {
 		}
 	}
 	
+	private boolean checkPermissionToMove(Game game, Pawn item) {
+		if(game.tourIs == Pawn.Color.A && item.type != Pawn.Color.A && item.type != Pawn.Color.A1) return false;
+		if(game.tourIs == Pawn.Color.B && item.type != Pawn.Color.B && item.type != Pawn.Color.B1) return false;
+		if(game.mustMove && (item.indexX != game.mustMovePt.x || item.indexY != game.mustMovePt.y)) {
+			//return false;
+		}
+		return true;
+	}
+	
 	private void eventInitPawn(Game game, Pawn item) {
 		/////////////////////////////////////////////////////////
 		item.circle.setOnMousePressed(new EventHandler<Event>() {
 			@Override
 			public void handle(Event event)
 			{
-				if(tourIs == Pawn.Color.A && item.type != Pawn.Color.A && item.type != Pawn.Color.A1) return;
-				if(tourIs == Pawn.Color.B && item.type != Pawn.Color.B && item.type != Pawn.Color.B1) return;
+				if(!checkPermissionToMove(game, item)) return;
 				PointerInfo a = MouseInfo.getPointerInfo();
 				Point b = a.getLocation();
 				item.circle.x = (int) b.getX();
 				item.circle.y = (int) b.getY();
+				item.circle.toFront();
 			}
 		});
 		////////////////////////////////////////////////////////
@@ -295,8 +368,7 @@ public class MainViewController {
 			@Override
 			public void handle(Event event)
 			{
-				if(tourIs == Pawn.Color.A && item.type != Pawn.Color.A && item.type != Pawn.Color.A1) return;
-				if(tourIs == Pawn.Color.B && item.type != Pawn.Color.B && item.type != Pawn.Color.B1) return;
+				if(!checkPermissionToMove(game, item)) return;
 				PointerInfo a = MouseInfo.getPointerInfo();
 				Point b = a.getLocation();
 				int x = (int) b.getX();
@@ -312,8 +384,7 @@ public class MainViewController {
 			@Override
 			public void handle(Event event)
 			{	
-				if(tourIs == Pawn.Color.A && item.type != Pawn.Color.A && item.type != Pawn.Color.A1) return;
-				if(tourIs == Pawn.Color.B && item.type != Pawn.Color.B && item.type != Pawn.Color.B1) return;
+				if(!checkPermissionToMove(game, item)) return;
 				PointerInfo a = MouseInfo.getPointerInfo();
 				Point b = a.getLocation();
 				int x = (int) b.getX();
@@ -327,52 +398,4 @@ public class MainViewController {
 			}
 		});
 	}
-
-		
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	@FXML
-	private void clickRafal(ActionEvent e)
-	{
-		MyCircle circle = new MyCircle(10);
-		EventHandler<Event> pionStartMove = new EventHandler<Event>() {
-			@Override
-			public void handle(Event event)
-			{
-				PointerInfo a = MouseInfo.getPointerInfo();
-				Point b = a.getLocation();
-				circle.x = (int) b.getX();
-				circle.y = (int) b.getY();
-			}
-		};
-		
-		EventHandler<Event> pionMove = new EventHandler<Event>() {
-			@Override
-			public void handle(Event event)
-			{
-				PointerInfo a = MouseInfo.getPointerInfo();
-				Point b = a.getLocation();
-				int x = (int) b.getX();
-				int y = (int) b.getY();
-				circle.setCenterX(circle.getCenterX()+x-circle.x);
-				circle.setCenterY(circle.getCenterY()+y-circle.y);
-				circle.x=x;
-				circle.y=y;
-			}
-		};
-		
-		circle.setOnMousePressed(pionStartMove);
-		circle.setOnMouseDragged(pionMove);
-		
-		board.getChildren().add(circle);
-		circle.setCenterX(100);
-		circle.setCenterY(100);
-	}	
 }
