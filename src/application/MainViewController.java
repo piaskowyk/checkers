@@ -169,11 +169,7 @@ public class MainViewController {
 			}
 		}
 		
-		if(item.type == Pawn.Color.A1) {
-			//TODO
-		}
-
-		if(item.type == Pawn.Color.B1) {
+		if(item.type == Pawn.Color.A1 || item.type == Pawn.Color.B1) {
 			//TODO
 		}
 		
@@ -287,7 +283,7 @@ public class MainViewController {
 			}
 		}
 		
-		if(!stop && !permission && item.type == Pawn.Color.A1) {
+		if(!stop && !permission && (item.type == Pawn.Color.A1 || item.type == Pawn.Color.B1)) {
 			if(Math.abs(biasX - item.indexX) == Math.abs(biasY - item.indexY)) {
 
 				int x, y;
@@ -303,12 +299,22 @@ public class MainViewController {
 					x = item.indexX + i;
 					y = item.indexY - i;
 					if(x > 0 && x < 7 && y > 0 && y < 7) {
-						if(game.GampePlayPawns[x][y] != null
-								&& (game.GampePlayPawns[x][y].type == Pawn.Color.B 
-									|| game.GampePlayPawns[x][y].type == Pawn.Color.B1)
-								&& game.GampePlayPawns[x + 1][y - 1] == null
-								&& game.GampePlayPawns[x - 1][y + 1] == null) {
-							countEnemy45deg++;
+						if(item.type == Pawn.Color.A1) {
+							if(game.GampePlayPawns[x][y] != null
+									&& (game.GampePlayPawns[x][y].type == Pawn.Color.B 
+										|| game.GampePlayPawns[x][y].type == Pawn.Color.B1)
+									&& game.GampePlayPawns[x + 1][y - 1] == null
+									&& game.GampePlayPawns[x - 1][y + 1] == null) {
+								countEnemy45deg++;
+							}
+						} else {
+							if(game.GampePlayPawns[x][y] != null
+									&& (game.GampePlayPawns[x][y].type == Pawn.Color.A 
+										|| game.GampePlayPawns[x][y].type == Pawn.Color.A1)
+									&& game.GampePlayPawns[x + 1][y - 1] == null
+									&& game.GampePlayPawns[x - 1][y + 1] == null) {
+								countEnemy45deg++;
+							}
 						}
 					}
 					if(x == biasX && y == biasY) {
@@ -320,12 +326,22 @@ public class MainViewController {
 					x = item.indexX + i;
 					y = item.indexY + i;
 					if(x > 0 && x < 7 && y > 0 && y < 7) {
-						if(game.GampePlayPawns[x][y] != null
-								&& (game.GampePlayPawns[x][y].type == Pawn.Color.B 
-									|| game.GampePlayPawns[x][y].type == Pawn.Color.B1)
-								&& game.GampePlayPawns[x + 1][y + 1] == null
-								&& game.GampePlayPawns[x - 1][y - 1] == null) {
-							countEnemy135deg++;
+						if(item.type == Pawn.Color.A1) {
+							if(game.GampePlayPawns[x][y] != null
+									&& (game.GampePlayPawns[x][y].type == Pawn.Color.B 
+										|| game.GampePlayPawns[x][y].type == Pawn.Color.B1)
+									&& game.GampePlayPawns[x + 1][y + 1] == null
+									&& game.GampePlayPawns[x - 1][y - 1] == null) {
+								countEnemy135deg++;
+							}
+						} else {
+							if(game.GampePlayPawns[x][y] != null
+									&& (game.GampePlayPawns[x][y].type == Pawn.Color.A 
+										|| game.GampePlayPawns[x][y].type == Pawn.Color.A1)
+									&& game.GampePlayPawns[x + 1][y + 1] == null
+									&& game.GampePlayPawns[x - 1][y - 1] == null) {
+								countEnemy135deg++;
+							}
 						}
 					}
 					if(x == biasX && y == biasY) {
@@ -337,12 +353,22 @@ public class MainViewController {
 					x = item.indexX - i;
 					y = item.indexY + i;
 					if(x > 0 && x < 7 && y > 0 && y < 7) {
-						if(game.GampePlayPawns[x][y] != null
-								&& (game.GampePlayPawns[x][y].type == Pawn.Color.B 
-									|| game.GampePlayPawns[x][y].type == Pawn.Color.B1)
-								&& game.GampePlayPawns[x - 1][y + 1] == null
-								&& game.GampePlayPawns[x + 1][y - 1] == null){
-							countEnemy225deg++;
+						if(item.type == Pawn.Color.A1) {
+							if(game.GampePlayPawns[x][y] != null
+									&& (game.GampePlayPawns[x][y].type == Pawn.Color.B 
+										|| game.GampePlayPawns[x][y].type == Pawn.Color.B1)
+									&& game.GampePlayPawns[x - 1][y + 1] == null
+									&& game.GampePlayPawns[x + 1][y - 1] == null){
+								countEnemy225deg++;
+							}
+						} else {
+							if(game.GampePlayPawns[x][y] != null
+									&& (game.GampePlayPawns[x][y].type == Pawn.Color.A 
+										|| game.GampePlayPawns[x][y].type == Pawn.Color.A1)
+									&& game.GampePlayPawns[x - 1][y + 1] == null
+									&& game.GampePlayPawns[x + 1][y - 1] == null){
+								countEnemy225deg++;
+							}
 						}
 					}
 					if(x == biasX && y == biasY) {
@@ -354,12 +380,22 @@ public class MainViewController {
 					x = item.indexX - i;
 					y = item.indexY - i;
 					if(x > 0 && x < 7 && y > 0 && y < 7) {
-						if(game.GampePlayPawns[x][y] != null
-								&& (game.GampePlayPawns[x][y].type == Pawn.Color.B 
-									|| game.GampePlayPawns[x][y].type == Pawn.Color.B1)
-								&& game.GampePlayPawns[x - 1][y - 1] == null
-								&& game.GampePlayPawns[x + 1][y + 1] == null){
-							countEnemy315deg++; 
+						if(item.type == Pawn.Color.A1) {
+							if(game.GampePlayPawns[x][y] != null
+									&& (game.GampePlayPawns[x][y].type == Pawn.Color.B 
+										|| game.GampePlayPawns[x][y].type == Pawn.Color.B1)
+									&& game.GampePlayPawns[x - 1][y - 1] == null
+									&& game.GampePlayPawns[x + 1][y + 1] == null){
+								countEnemy315deg++; 
+							}
+						} else {
+							if(game.GampePlayPawns[x][y] != null
+									&& (game.GampePlayPawns[x][y].type == Pawn.Color.A 
+										|| game.GampePlayPawns[x][y].type == Pawn.Color.A1)
+									&& game.GampePlayPawns[x - 1][y - 1] == null
+									&& game.GampePlayPawns[x + 1][y + 1] == null){
+								countEnemy315deg++; 
+							}
 						}
 					}
 					if(x == biasX && y == biasY) {
@@ -373,12 +409,22 @@ public class MainViewController {
 				x = item.indexX + 1;
 				y = item.indexY - 1;
 				if(x > 0 && x < 7 && y > 0 && y < 7) {
-					if(game.GampePlayPawns[x][y] != null
-							&& (game.GampePlayPawns[x][y].type == Pawn.Color.B 
-								|| game.GampePlayPawns[x][y].type == Pawn.Color.B1)
-							&& game.GampePlayPawns[x + 1][y - 1] == null) {
-						countEnemy45deg++;
-						if(direction == 1) countEnemyToKill++;
+					if(item.type == Pawn.Color.A1) {
+						if(game.GampePlayPawns[x][y] != null
+								&& (game.GampePlayPawns[x][y].type == Pawn.Color.B 
+									|| game.GampePlayPawns[x][y].type == Pawn.Color.B1)
+								&& game.GampePlayPawns[x + 1][y - 1] == null) {
+							countEnemy45deg++;
+							if(direction == 1) countEnemyToKill++;
+						}
+					} else {
+						if(game.GampePlayPawns[x][y] != null
+								&& (game.GampePlayPawns[x][y].type == Pawn.Color.A 
+									|| game.GampePlayPawns[x][y].type == Pawn.Color.A1)
+								&& game.GampePlayPawns[x + 1][y - 1] == null) {
+							countEnemy45deg++;
+							if(direction == 1) countEnemyToKill++;
+						}
 					}
 				}
 				
@@ -386,12 +432,22 @@ public class MainViewController {
 				x = item.indexX + 1;
 				y = item.indexY + 1;
 				if(x > 0 && x < 7 && y > 0 && y < 7) {
-					if(game.GampePlayPawns[x][y] != null
-							&& (game.GampePlayPawns[x][y].type == Pawn.Color.B 
-								|| game.GampePlayPawns[x][y].type == Pawn.Color.B1)
-							&& game.GampePlayPawns[x + 1][y + 1] == null) {
-						countEnemy135deg++;
-						if(direction == 2) countEnemyToKill++;
+					if(item.type == Pawn.Color.A1) {
+						if(game.GampePlayPawns[x][y] != null
+								&& (game.GampePlayPawns[x][y].type == Pawn.Color.B 
+									|| game.GampePlayPawns[x][y].type == Pawn.Color.B1)
+								&& game.GampePlayPawns[x + 1][y + 1] == null) {
+							countEnemy135deg++;
+							if(direction == 2) countEnemyToKill++;
+						}
+					} else {
+						if(game.GampePlayPawns[x][y] != null
+								&& (game.GampePlayPawns[x][y].type == Pawn.Color.A 
+									|| game.GampePlayPawns[x][y].type == Pawn.Color.A1)
+								&& game.GampePlayPawns[x + 1][y + 1] == null) {
+							countEnemy135deg++;
+							if(direction == 2) countEnemyToKill++;
+						}
 					}
 				}
 				
@@ -399,12 +455,22 @@ public class MainViewController {
 				x = item.indexX - 1;
 				y = item.indexY + 1;
 				if(x > 0 && x < 7 && y > 0 && y < 7) {
-					if(game.GampePlayPawns[x][y] != null
-							&& (game.GampePlayPawns[x][y].type == Pawn.Color.B 
-								|| game.GampePlayPawns[x][y].type == Pawn.Color.B1)
-							&& game.GampePlayPawns[x - 1][y + 1] == null){
-						countEnemy225deg++;
-						if(direction == 3) countEnemyToKill++;
+					if(item.type == Pawn.Color.A1) {
+						if(game.GampePlayPawns[x][y] != null
+								&& (game.GampePlayPawns[x][y].type == Pawn.Color.B 
+									|| game.GampePlayPawns[x][y].type == Pawn.Color.B1)
+								&& game.GampePlayPawns[x - 1][y + 1] == null){
+							countEnemy225deg++;
+							if(direction == 3) countEnemyToKill++;
+						}
+					} else {
+						if(game.GampePlayPawns[x][y] != null
+								&& (game.GampePlayPawns[x][y].type == Pawn.Color.A 
+									|| game.GampePlayPawns[x][y].type == Pawn.Color.A1)
+								&& game.GampePlayPawns[x - 1][y + 1] == null){
+							countEnemy225deg++;
+							if(direction == 3) countEnemyToKill++;
+						}
 					}
 				}
 				
@@ -412,12 +478,22 @@ public class MainViewController {
 				x = item.indexX - 1;
 				y = item.indexY - 1;
 				if(x > 0 && x < 7 && y > 0 && y < 7) {
-					if(game.GampePlayPawns[x][y] != null
-							&& (game.GampePlayPawns[x][y].type == Pawn.Color.B 
-								|| game.GampePlayPawns[x][y].type == Pawn.Color.B1)
-							&& game.GampePlayPawns[x - 1][y - 1] == null){
-						countEnemy315deg++;
-						if(direction == 4) countEnemyToKill++;
+					if(item.type == Pawn.Color.A1) {
+						if(game.GampePlayPawns[x][y] != null
+								&& (game.GampePlayPawns[x][y].type == Pawn.Color.B 
+									|| game.GampePlayPawns[x][y].type == Pawn.Color.B1)
+								&& game.GampePlayPawns[x - 1][y - 1] == null){
+							countEnemy315deg++;
+							if(direction == 4) countEnemyToKill++;
+						}
+					} else {
+						if(game.GampePlayPawns[x][y] != null
+								&& (game.GampePlayPawns[x][y].type == Pawn.Color.A 
+									|| game.GampePlayPawns[x][y].type == Pawn.Color.A1)
+								&& game.GampePlayPawns[x - 1][y - 1] == null){
+							countEnemy315deg++;
+							if(direction == 4) countEnemyToKill++;
+						}
 					}
 				}
 				
@@ -467,14 +543,28 @@ public class MainViewController {
 							y--;
 							break;
 						}
-						if((x >= 0 && x <= 7 && y >= 0 && y <= 7) 
-								&& game.GampePlayPawns[x][y] != null
-								&& (game.GampePlayPawns[x][y].type == Pawn.Color.B 
-									|| game.GampePlayPawns[x][y].type == Pawn.Color.B1)) {
-							killEnemy = true;
-							enemyX = x;
-							enemyY = y;
-							break;
+						if(item.type == Pawn.Color.A1) {
+							if((x >= 0 && x <= 7 && y >= 0 && y <= 7) 
+									&& game.GampePlayPawns[x][y] != null
+									&& (game.GampePlayPawns[x][y].type == Pawn.Color.B 
+										|| game.GampePlayPawns[x][y].type == Pawn.Color.B1)) {
+								killEnemy = true;
+								enemyX = x;
+								enemyY = y;
+								if(isPossibleToKill(game, item, false, biasX, biasY)) nextTour = true;
+								break;
+							}
+						} else {
+							if((x >= 0 && x <= 7 && y >= 0 && y <= 7) 
+									&& game.GampePlayPawns[x][y] != null
+									&& (game.GampePlayPawns[x][y].type == Pawn.Color.A 
+										|| game.GampePlayPawns[x][y].type == Pawn.Color.A1)) {
+								killEnemy = true;
+								enemyX = x;
+								enemyY = y;
+								if(isPossibleToKill(game, item, false, biasX, biasY)) nextTour = true;
+								break;
+							}
 						}
 					}
 				}
@@ -491,10 +581,6 @@ public class MainViewController {
 				System.out.println("d: "+countEnemy315deg);
 				
 			}
-		}
-
-		if(!stop && !permission && item.type == Pawn.Color.B1) {
-			//TODO
 		}
 		
 		if((mustKill || game.attackers != null) && !killEnemy) permission = false;
@@ -563,21 +649,6 @@ public class MainViewController {
 		
 		if(game.pointA == 0 || game.pointB == 0) {
 			endGame(game);
-		}
-	}
-	
-	private void printTab(Game game) {
-		for(int i = 0; i < 8; i++) {
-			for(int k = 0; k < 8; k++) {
-				if(game.GampePlayPawns[k][i] != null) {
-					System.out.print(1);
-					if(k != 7) System.out.print(",");
-				} else {
-					System.out.print(0);
-					if(k != 7) System.out.print(",");
-				}
-			}
-			System.out.println();
 		}
 	}
 	
