@@ -14,6 +14,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 
@@ -23,8 +24,10 @@ public class MainViewController {
 	private double itemSize;
 	private double space;
 	private double R;
+	private int bias = 40;
 	
 	GraphicsContext playGround;
+	BorderPane borderPlane;
 	
 	@FXML
 	private Button btn;
@@ -40,6 +43,11 @@ public class MainViewController {
 	private Label BPointText;
 	
 	public void startGame(Game game) {
+		game.pointA = 8;
+		game.pointB = 8;
+		game.mustMove = false;
+		game.attackers = null;
+		
 		drawPlayGround();
 		drawPawns(game);
 		eventInit(game);
@@ -74,6 +82,16 @@ public class MainViewController {
 	}
 	
 	private void drawPawns(Game game) {
+		
+		for(int i=0; i<8; i++) {
+			for(int k=0; k<8; k++) {
+				if(game.GampePlayPawns[k][i] != null) {
+					borderPlane.getChildren().remove(game.GampePlayPawns[k][i].circle);
+					game.GampePlayPawns[k][i] = null;
+				}
+			}
+		}
+		
 		border = ground.getWidth();
 		itemSize = border/8;
 		space = itemSize/2;
@@ -90,7 +108,8 @@ public class MainViewController {
 					game.GampePlayPawns[k][i].circle.setFill(Color.DARKBLUE);
 					board.getChildren().add(game.GampePlayPawns[k][i].circle);
 					game.GampePlayPawns[k][i].circle.setCenterX(itemSize*k + space);
-					game.GampePlayPawns[k][i].circle.setCenterY(itemSize*i + space);
+					game.GampePlayPawns[k][i].circle.setCenterY(itemSize*i + space + bias);
+					borderPlane.getChildren().add(game.GampePlayPawns[k][i].circle);
 				} 
 				else if((i == 6 && k%2 == 1) || (i == 7 && k%2 == 0)) {		
 					game.GampePlayPawns[k][i] = new Pawn();
@@ -101,7 +120,8 @@ public class MainViewController {
 					game.GampePlayPawns[k][i].circle.setFill(Color.BROWN);
 					board.getChildren().add(game.GampePlayPawns[k][i].circle);
 					game.GampePlayPawns[k][i].circle.setCenterX(itemSize*k + space);
-					game.GampePlayPawns[k][i].circle.setCenterY(itemSize*i + space);
+					game.GampePlayPawns[k][i].circle.setCenterY(itemSize*i + space + bias);
+					borderPlane.getChildren().add(game.GampePlayPawns[k][i].circle);
 				}
 				else {
 					game.GampePlayPawns[k][i] = null;
@@ -512,7 +532,6 @@ public class MainViewController {
 	}
 	
 	private void movePawn(Game game, Pawn item, int biasX, int biasY) {
-		System.out.println(item.type);
 		boolean nextTour = false;
 		boolean stop = false;
 		boolean permission = false;
@@ -884,9 +903,9 @@ public class MainViewController {
 			double ptY = biasY * itemSize + space;
 			
 			item.circle.setCenterX(ptX);
-			item.circle.setCenterY(ptY);
+			item.circle.setCenterY(ptY + bias);
 			item.x = ptX;
-			item.y = ptY;
+			item.y = ptY + bias;
 			
 			Point lastPt = new Point();
 			lastPt.x = item.indexX;
@@ -913,7 +932,8 @@ public class MainViewController {
 					game.pointB--;
 					BPointText.setText(Integer.toString(game.pointB));
 				}
-				game.GampePlayPawns[enemyX][enemyY].circle.setCenterX(-1000);//TODO
+				
+				borderPlane.getChildren().remove(game.GampePlayPawns[enemyX][enemyY].circle);
 				game.GampePlayPawns[enemyX][enemyY] = null;
 			}
 
@@ -935,9 +955,9 @@ public class MainViewController {
 			double ptY = item.indexY * itemSize + space;
 			
 			item.circle.setCenterX(ptX);
-			item.circle.setCenterY(ptY);
+			item.circle.setCenterY(ptY + bias);
 			item.x = ptX;
-			item.y = ptY;
+			item.y = ptY + bias;
 		}	
 		
 		if(gameOver(game)) {
@@ -1005,7 +1025,7 @@ public class MainViewController {
 				int biasX, biasY;
 				
 				biasX = (int)Math.floor((item.circle.getCenterX() + x - item.circle.x) / itemSize);
-				biasY = (int)Math.floor((item.circle.getCenterY() + y - item.circle.y) / itemSize);
+				biasY = (int)Math.floor((item.circle.getCenterY() + y - item.circle.y - bias) / itemSize);
 			
 				movePawn(game, item, biasX, biasY);
 			}
