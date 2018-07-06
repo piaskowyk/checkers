@@ -183,7 +183,7 @@ public class MainViewController {
 				tmpY = item.indexY - i;
 				if(tmpX > 0 && tmpX < 7 && tmpY > 0 && tmpY < 7) {
 					if(item.type == Pawn.Color.A1) {
-						if(game.GampePlayPawns[tmpX][y] != null
+						if(game.GampePlayPawns[tmpX][tmpY] != null
 								&& (game.GampePlayPawns[tmpX][tmpY].type == Pawn.Color.B 
 									|| game.GampePlayPawns[tmpX][tmpY].type == Pawn.Color.B1)
 								&& game.GampePlayPawns[tmpX + 1][tmpY - 1] == null
@@ -409,7 +409,7 @@ public class MainViewController {
 		Alert alert = new Alert(AlertType.INFORMATION);
 		alert.setTitle("GAME OVER");
 		alert.setHeaderText("Win: " + (game.winner == Pawn.Color.A ? "A" : "B"));
-		alert.setContentText("A have " + (8 - game.pointB) + " poins and B have " + (8 - game.pointB) + " points.");
+		alert.setContentText("A have " + (8 - game.pointB) + " poins and B have " + (8 - game.pointA) + " points.");
 		alert.showAndWait();
 
 		startGame(game);
@@ -512,10 +512,10 @@ public class MainViewController {
 	}
 	
 	private void movePawn(Game game, Pawn item, int biasX, int biasY) {
+		System.out.println(item.type);
 		boolean nextTour = false;
 		boolean stop = false;
 		boolean permission = false;
-		boolean chanceType = false;
 		boolean killEnemy = false;
 		int enemyX = 0, enemyY = 0;
 		boolean mustKill = game.mustMove;
@@ -879,8 +879,7 @@ public class MainViewController {
 		
 		if((mustKill || game.attackers != null) && !killEnemy) permission = false;
 		
-		if(!stop && permission) {	
-			if(biasY == 7) chanceType = true;
+		if(!stop && permission) {
 			double ptX = biasX * itemSize + space;
 			double ptY = biasY * itemSize + space;
 			
@@ -898,10 +897,10 @@ public class MainViewController {
 			game.GampePlayPawns[biasX][biasY] = game.GampePlayPawns[lastPt.x][lastPt.y];
 			game.GampePlayPawns[lastPt.x][lastPt.y] = null;
 			
-			if(chanceType && item.type == Pawn.Color.A) {
+			if(biasY == 7 && item.type == Pawn.Color.A) {
 				item.type = Pawn.Color.A1;
 			}
-			if(chanceType && item.type == Pawn.Color.B) {
+			if(biasY == 0 && item.type == Pawn.Color.B) {
 				item.type = Pawn.Color.B1;
 			}
 			
