@@ -7,6 +7,7 @@ public class Pawn{
 	public int indexX;
 	public int indexY;
 	public Color type;
+	public boolean enable = true;
 	
 	public enum Color{
 		A,
